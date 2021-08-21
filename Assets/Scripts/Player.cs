@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Singleton<Player>
 {
     [SerializeField] private float movementSpeed;
     [SerializeField] private float turnSpeed;
@@ -27,20 +27,26 @@ public class Player : MonoBehaviour
     void Update()
     {
         dragX = inputManager.DragX;
-        
     }
 
     private void FixedUpdate()
+    {
+        HandleRotation();
+        Vector3 newVelocity = new Vector3(transform.forward.x * movementSpeed, rigidbody.velocity.y, movementSpeed);
+        rigidbody.velocity = newVelocity;
+    }
+
+    private void HandleRotation()
     {
         float rotationY = transform.localEulerAngles.y;
         rotationY = (rotationY > 180) ? rotationY - 360 : rotationY;
         if (resetingRotation)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, 0), Time.fixedDeltaTime * turnSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, 0), Time.fixedDeltaTime * turnSpeed * 2);
         }
         if (dragX > 0)
         {
-            if(rotationY < maxRotation)
+            if (rotationY < maxRotation)
                 transform.Rotate(0, dragX * turnSpeed * Time.fixedDeltaTime, 0);
         }
         else if (dragX < 0)
@@ -48,8 +54,6 @@ public class Player : MonoBehaviour
             if (rotationY > -maxRotation)
                 transform.Rotate(0, dragX * turnSpeed * Time.fixedDeltaTime, 0);
         }
-        Vector3 newVelocity = transform.forward * movementSpeed + Vector3.up * rigidbody.velocity.y;
-        rigidbody.velocity = newVelocity;
     }
 
     private void ResetRotation(bool reset)

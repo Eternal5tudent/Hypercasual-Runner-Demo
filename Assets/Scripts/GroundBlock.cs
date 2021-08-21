@@ -6,7 +6,7 @@ public class GroundBlock : MonoBehaviour
 {
     [SerializeField] private Material fallingMaterial; // Material of terrain block after touched by player
     [SerializeField] private float gravityAcceleration = 9f;
-    [SerializeField] private float destroyAfterSeconds = 1f;
+    [SerializeField] private float destroyAfterSeconds = 0.2f;
 
     private bool touchedByPlayer = false;
     private MeshRenderer meshRenderer;
