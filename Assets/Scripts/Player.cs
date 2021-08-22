@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ public class Player : Singleton<Player>
     private InputManager inputManager;
     private new Rigidbody rigidbody;
     private bool resetingRotation;
+    private bool isAlive;
+
+    public static Action onPlayerDeath;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +25,8 @@ public class Player : Singleton<Player>
         rigidbody = GetComponent<Rigidbody>();
         inputManager.onMouseUp += () => ResetRotation(true);
         inputManager.onMouseDown += () => ResetRotation(false);
+        Enemy.onAttack += Die;
+        isAlive = true;
     }
 
     // Update is called once per frame
@@ -31,9 +37,12 @@ public class Player : Singleton<Player>
 
     private void FixedUpdate()
     {
-        HandleRotation();
-        Vector3 newVelocity = new Vector3(transform.forward.x * movementSpeed, rigidbody.velocity.y, movementSpeed);
-        rigidbody.velocity = newVelocity;
+        if (isAlive)
+        {
+            HandleRotation();
+            Vector3 newVelocity = new Vector3(transform.forward.x * movementSpeed, rigidbody.velocity.y, movementSpeed);
+            rigidbody.velocity = newVelocity;
+        }
     }
 
     private void HandleRotation()
@@ -59,5 +68,15 @@ public class Player : Singleton<Player>
     private void ResetRotation(bool reset)
     {
         resetingRotation = reset;
+    }
+
+    private void Die()
+    {
+        if (isAlive) // execute only if the player hasn't died already
+        {
+            isAlive = false;
+            rigidbody.velocity = Vector3.zero;
+            onPlayerDeath?.Invoke();
+        }
     }
 }

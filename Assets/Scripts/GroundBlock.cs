@@ -30,14 +30,19 @@ public class GroundBlock : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player"))
         {
-            if (!touchedByPlayer) // if it's the first time being touched by the player
+            if (!GameManager.Instance.IsGameOver)
             {
-                touchedByPlayer = true;
-                meshRenderer.material = fallingMaterial;
-                timeFalling = 0;
-                meshCollider.enabled = false;
-                StartCoroutine(Deactivate_Cor(destroyAfterSeconds));
+                if (!touchedByPlayer) // if it's the first time being touched by the player
+                {
+                    touchedByPlayer = true;
+                    meshRenderer.material = fallingMaterial;
+                    timeFalling = 0;
+                    meshCollider.enabled = false;
+                    StartCoroutine(Deactivate_Cor(destroyAfterSeconds));
+                }
             }
+
+            
 
         }
     }

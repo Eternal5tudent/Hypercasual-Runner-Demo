@@ -33,7 +33,6 @@ public class OrangeEnemy : Enemy
    
     private void Jump()
     {
-        print("JUMP!");
         rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
     }
 

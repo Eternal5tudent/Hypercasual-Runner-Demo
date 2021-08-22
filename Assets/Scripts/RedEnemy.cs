@@ -24,7 +24,6 @@ public class RedEnemy : Enemy
 
         else if (canGoRight)
         {
-            print("TURNING!!");
             return rightGroundCheck.position - transform.position;
         }
 
@@ -39,7 +38,10 @@ public class RedEnemy : Enemy
 
     protected override void Move()
     {
-        float angle = Vector3.Angle(transform.forward, DecideMoveDirection());
+        Vector3 moveDirection = DecideMoveDirection();
+        float angle = Vector3.Angle(transform.forward, moveDirection);
+        float angleDirection = moveDirection.x / Mathf.Abs(moveDirection.x);
+        //todo: the following code is very hacky
         if (Mathf.Abs(angle) >= 20)
         {
             movementSpeed = 2;
@@ -48,7 +50,7 @@ public class RedEnemy : Enemy
         {
             movementSpeed = 8;
         }
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, angle, 0), Time.fixedDeltaTime * rotateSpeed * 2);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, angleDirection * angle, 0), Time.fixedDeltaTime * rotateSpeed * 2);
         base.Move();
     }
 
