@@ -40,7 +40,13 @@ public class RedEnemy : Enemy
     {
         Vector3 moveDirection = DecideMoveDirection();
         float angle = Vector3.Angle(transform.forward, moveDirection);
-        float angleDirection = moveDirection.x / Mathf.Abs(moveDirection.x);
+        float angleSign;
+
+        if (moveDirection.x != 0)
+            angleSign = moveDirection.x / Mathf.Abs(moveDirection.x);
+        else
+            angleSign = 1;
+
         //todo: the following code is very hacky
         if (Mathf.Abs(angle) >= 20)
         {
@@ -50,7 +56,7 @@ public class RedEnemy : Enemy
         {
             movementSpeed = 8;
         }
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, angleDirection * angle, 0), Time.fixedDeltaTime * rotateSpeed * 2);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, angleSign * angle, 0), Time.fixedDeltaTime * rotateSpeed * 2);
         base.Move();
     }
 
@@ -61,6 +67,7 @@ public class RedEnemy : Enemy
         Gizmos.DrawRay(rightGroundCheck.position, Vector3.down * groundCheckRayLength);
         Gizmos.DrawRay(frontGroundCheck.position, Vector3.down * groundCheckRayLength);
         Gizmos.color = Color.blue;
+        //todo: this takes up performance
         Gizmos.DrawRay(transform.position, 2 * groundCheckRayLength * DecideMoveDirection());
     }
 }

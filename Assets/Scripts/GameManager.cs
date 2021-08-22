@@ -13,7 +13,7 @@ public class GameManager : Singleton<GameManager>
         Player.onPlayerDeath += GameOver;
     }
 
-    public void Won()
+    public void WinGame()
     {
         IsGameOver = true;
         GameController.Instance.OpenWinMenu();
