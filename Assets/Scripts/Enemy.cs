@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     public static Action onAttack;
 
     protected Rigidbody rb;
+    protected Animator animator;
     protected NavMeshAgent nav;
     protected bool isControlledByNav;
     protected bool hasAttacked;
@@ -21,6 +22,7 @@ public class Enemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     protected virtual void Start()
@@ -71,6 +73,7 @@ public class Enemy : MonoBehaviour
         hasAttacked = true;
         rb.velocity = Vector3.zero;
         StartCoroutine(JumpOnPlayer_Cor(0.2f));
+        animator.SetBool("dead", true);
     }
 
     private IEnumerator JumpOnPlayer_Cor(float duration)

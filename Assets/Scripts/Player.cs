@@ -13,16 +13,24 @@ public class Player : Singleton<Player>
     private float dragX;
     private InputManager inputManager;
     private new Rigidbody rigidbody;
+    private Animator animator;
     private bool resetingRotation;
     private bool isAlive;
 
     public static Action onPlayerDeath;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        rigidbody = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         inputManager = InputManager.Instance;
-        rigidbody = GetComponent<Rigidbody>();
+     
         inputManager.onMouseUp += () => ResetRotation(true);
         inputManager.onMouseDown += () => ResetRotation(false);
         Enemy.onAttack += Die;
@@ -77,6 +85,7 @@ public class Player : Singleton<Player>
             isAlive = false;
             rigidbody.velocity = Vector3.zero;
             onPlayerDeath?.Invoke();
+            animator.SetBool("dead", true);
         }
     }
 }
