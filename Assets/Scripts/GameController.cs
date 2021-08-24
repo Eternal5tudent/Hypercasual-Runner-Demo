@@ -7,6 +7,7 @@ public class GameController : Singleton<GameController>
 {
     [SerializeField] GameObject gameOverMenu;
     [SerializeField] GameObject winMenu;
+    [SerializeField] GameObject tutorial;
 
     public void OpenGameOverMenu()
     {
@@ -25,6 +26,20 @@ public class GameController : Singleton<GameController>
 
     public void LoadNextLevel()
     {
+        int lastSceneIndex = SceneManager.sceneCountInBuildSettings - 1;
+        int currentBuildNum = SceneManager.GetActiveScene().buildIndex;
+        if (currentBuildNum == lastSceneIndex)
+        {
+            SceneManager.LoadSceneAsync(0);
+        }
+        else
+        {
+            SceneManager.LoadSceneAsync(lastSceneIndex);
+        }
+    }
 
+    public void EnableTutorial(bool enable)
+    {
+        tutorial.SetActive(enable);
     }
 }

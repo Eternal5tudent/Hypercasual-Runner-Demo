@@ -12,6 +12,7 @@ public class Player : Singleton<Player>
 
     private float dragX;
     private InputManager inputManager;
+    private GameManager gameManager;
     private new Rigidbody rigidbody;
     private Animator animator;
     private bool resetingRotation;
@@ -30,10 +31,12 @@ public class Player : Singleton<Player>
     void Start()
     {
         inputManager = InputManager.Instance;
-     
+        gameManager = GameManager.Instance;
         inputManager.onMouseUp += () => ResetRotation(true);
         inputManager.onMouseDown += () => ResetRotation(false);
         Enemy.onAttack += Die;
+        GameManager.onGameStart += OnGameStart;
+        GameManager.onGameWon += OnGameOver;
         isAlive = true;
     }
 
@@ -43,9 +46,19 @@ public class Player : Singleton<Player>
         dragX = inputManager.DragX;
     }
 
+    private void OnGameStart()
+    {
+        animator.SetBool("idle", false);
+    }
+
+    private void OnGameOver()
+    {
+        animator.SetBool("idle", true);
+    }
+
     private void FixedUpdate()
     {
-        if (isAlive)
+        if (isAlive && !gameManager.IsGameOver && gameManager.HasGameStarted)
         {
             HandleRotation();
             Vector3 newVelocity = new Vector3(transform.forward.x * movementSpeed, rigidbody.velocity.y, movementSpeed);
@@ -87,5 +100,12 @@ public class Player : Singleton<Player>
             onPlayerDeath?.Invoke();
             animator.SetBool("dead", true);
         }
+    }
+
+    private void OnDisable()
+    {
+        GameManager.onGameStart -= OnGameStart;
+        GameManager.onGameWon -= OnGameOver;
+
     }
 }

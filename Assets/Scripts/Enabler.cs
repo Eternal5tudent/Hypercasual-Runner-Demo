@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Enabler : MonoBehaviour
 {
-    /// <summary>
-    /// Enable a GameObject when the player passes from the position of this gameObject
-    /// </summary>
-    [SerializeField] GameObject objectToEnable;
     Transform player;
+    private void OnEnable()
+    {
+        transform.GetChild(0).gameObject.SetActive(false);
+    }
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class Enabler : MonoBehaviour
     {
         if (player.position.z >= transform.position.z)
         {
-            objectToEnable.SetActive(true);
+            transform.GetChild(0).gameObject.SetActive(true);
         }
     }
 

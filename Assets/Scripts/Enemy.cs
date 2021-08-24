@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
     protected bool isControlledByNav;
     protected bool hasAttacked;
     protected Transform player;
+    protected GameManager gameManager;
 
     private void Awake()
     {
@@ -32,20 +33,31 @@ public class Enemy : MonoBehaviour
             EnableNavAgent(false);
         }
         player = Player.Instance.transform;
+        gameManager = GameManager.Instance;
+        GameManager.onGameStart += OnGameStart;
+        if (gameManager.HasGameStarted)
+        {
+            animator.SetBool("idle", false);
+        }
+    }
+    
+    void OnGameStart()
+    {
+        animator.SetBool("idle", false);
     }
 
     private void Update()
     {
         if (isControlledByNav)
         {
-             // if enemy has reached its destination
+            // if enemy has reached its destination
             if (nav.pathStatus == NavMeshPathStatus.PathComplete && nav.remainingDistance == 0)
             {
                 EnableNavAgent(false);
             }
         }
 
-        if (!hasAttacked)
+        if (!hasAttacked && !gameManager.IsGameOver)
         {
             // if enemy is too close to the player, attack him 
             if (Vector3.Distance(transform.position, player.position) <= 2)
@@ -57,12 +69,12 @@ public class Enemy : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        if (!isControlledByNav && !hasAttacked)
+        if (!isControlledByNav && !hasAttacked && gameManager.HasGameStarted && gameManager.HasGameStarted)
             Move();
     }
 
     // Logic used for the enemy movement goes here
-    protected virtual void Move() 
+    protected virtual void Move()
     {
         rb.velocity = transform.forward * movementSpeed + Vector3.up * rb.velocity.y;
     }
@@ -115,4 +127,9 @@ public class Enemy : MonoBehaviour
         nav.SetDestination(destination);
     }
     #endregion
+
+    private void OnDisable()
+    {
+        GameManager.onGameStart -= OnGameStart;
+    }
 }

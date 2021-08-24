@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// An object pool would be useful here, but I'm out of time
 public class EnemySpawner : MonoBehaviour
 {
     [System.Serializable]
@@ -22,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     [SerializeField] Transform enemyDestination;
     [SerializeField] List<EnemyCategory> enemies;
-    
+
 
     private void Start()
     {
@@ -45,17 +46,15 @@ public class EnemySpawner : MonoBehaviour
         }
         else
         {
-            if (enemyIsFollowingPath)
+            foreach (EnemyCategory category in enemies)
             {
-                foreach (EnemyCategory category in enemies)
+                for (int i = 0; i < category.count; i++)
                 {
-                    for (int i = 0; i < category.count; i++)
-                    {
-                        SpawnEnemy(category);
-                        yield return new WaitForSeconds(timeBetweenSpawns);
-                    }
+                    SpawnEnemy(category);
+                    yield return new WaitForSeconds(timeBetweenSpawns);
                 }
             }
+
         }
     }
 

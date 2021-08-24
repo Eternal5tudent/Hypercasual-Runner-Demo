@@ -12,11 +12,13 @@ public class GroundBlock : MonoBehaviour
     private MeshRenderer meshRenderer;
     private Collider meshCollider;
     private float timeFalling = 0; // Time since the block turned red
+    private GameManager gameManager;
 
     private void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
         meshCollider = GetComponent<Collider>();
+        gameManager = GameManager.Instance;
     }
 
     private void Update()
@@ -30,7 +32,7 @@ public class GroundBlock : MonoBehaviour
     {
         if (collision.collider.CompareTag("Player"))
         {
-            if (!GameManager.Instance.IsGameOver)
+            if (!gameManager.IsGameOver && gameManager.HasGameStarted)
             {
                 if (!touchedByPlayer) // if it's the first time being touched by the player
                 {
